@@ -1,0 +1,102 @@
+{
+    "data": [
+      {
+        "id": 1001,
+        "title": "OpenAI",
+        "category": "Top",
+        "description": "OpenAI is an AI research and deployment company. Our mission is to ensure that artificial general intelligence benefits all of humanity.",
+        "link": "https://openai.com/"
+      },
+      {
+        "id": 1002,
+        "title": "Gemini",
+        "category": "Top",
+        "description": "Gemini is a regulated cryptocurrency exchange, wallet, and custodian that makes it simple and secure to buy bitcoin, ether, and other cryptocurrencies.",
+        "link": "https://gemini.com/"
+      },
+      {
+        "id": 1003,
+        "title": "Nullface AI",
+        "category": "Video",
+        "description": "Generate stunning narrated AI videos for Youtube, Instagram.",
+        "link": "https://nullface.ai/"
+      },
+      {
+        "id": 1004,
+        "title": "Faceless Video",
+        "category": "Video",
+        "description": "Faceless .video creates content and posts it to your account every day. Our AI automated content creation tool converts text to video in minutes and posts",
+        "link": "https://faceless.video/"
+      },
+      {
+        "id": 1005,
+        "title": "InVideo",
+        "category": "Video",
+        "description": "Create faceless videos on any topic. The AI-powered faceless video generator churns out videos in seconds. Prompt invideo AI to make a video on travel, finance etc",
+        "link": "https://invideo.io/"
+      },
+      {
+        "id": 1006,
+        "title": "VidIQ",
+        "category": "Video",
+        "description": "vidIQ helps you acquire the tools and knowledge needed to grow your audience faster on YouTube and beyond. It can also help you in content creation.",
+        "link": "https://vidiq.com/"
+      },
+      {
+        "id": 1007,
+        "title": "Vimeo",
+        "category": "Video",
+        "description": "Vimeo is a video hosting, sharing, and services platform. It is a video-sharing website in which users can upload, share and view videos.",
+        "link": "https://vimeo.com/"
+      },
+      {
+        "id": 1008,
+        "title": "Twitch",
+        "category": "Video",
+        "description": "Twitch is a video live streaming service operated by Twitch Interactive, a subsidiary of Amazon. It is mainly used for video game live streaming.",
+        "link": "https://twitch.tv/"
+      },
+      {
+        "id": 1009,
+        "title": "YouTube",
+        "category": "Video",
+        "description": "YouTube is an American online video-sharing platform headquartered in San Bruno, California. It is the second most visited website in the world.",
+        "link": "https://youtube.com/"
+      },
+      {
+        "id": 1010,
+        "title": "Facebook",
+        "category": "Social",
+        "description": "Facebook is an American online social media and social networking service. It is based in Menlo Park, California. It was founded by Mark Zuckerberg.",
+        "link": "https://facebook.com/"
+      },
+      {
+        "id": 1011,
+        "title": "Instagram",
+        "category": "Social",
+        "description": "Instagram is an American photo and video sharing social networking service owned by Facebook. It was created by Kevin Systrom and Mike Krieger.",
+        "link": "https://instagram.com/"
+      },
+      {
+        "id": 1012,
+        "title": "Twitter",
+        "category": "Social",
+        "description": "Twitter is an American microblogging and social networking service on which users post and interact with messages known as tweets.",
+        "link": "https://twitter.com/"
+      },
+      {
+        "id": 1013,
+        "title": "LinkedIn",
+        "category": "Social",
+        "description": "LinkedIn is an American business and employment-oriented online service that operates via websites and mobile apps. It was founded on December 28, 2002.",
+        "link": "https://linkedin.com/"
+      },
+      {
+        "id": 1014,
+        "title": "Reddit",
+        "category": "Social",
+        "description": "Reddit is an American social news aggregation, web content rating, and discussion website. It was founded in 2005 by Steve Huffman and Alexis Ohanian.",
+        "link": "https://reddit.com/"
+      }
+    ] 
+}
