@@ -22,7 +22,7 @@ function App() {
 
   const loadData = async (start, end) => {
     try {
-      const response = await axios.get(`https://nullai.onrender.com/data?_start=${start}&_end=${end}`);
+      const response = await axios.get(`https://nullaidb.onrender.com/data?_start=${start}&_end=${end}`);
       const searchData = value.trim().toLowerCase(); // Convert search value to lowercase and trim whitespace
       const filteredData = response.data.filter(item => item.title.toLowerCase().includes(searchData));
       setData(filteredData);
@@ -33,7 +33,7 @@ function App() {
 
   const loadTotalItems = async () => {
     try{
-      const response = await axios.get('https://nullai.onrender.com/data');
+      const response = await axios.get('https://nullaidb.onrender.com/data');
       setTotalItems(response.data.length);
     }catch(error){
       console.error(error);
@@ -57,7 +57,7 @@ function App() {
 
   const handleFilter = async (category) => {
     return await axios
-      .get(`https://nullai.onrender.com/data?category=${category}`)
+      .get(`https://nullaidb.onrender.com/data?category=${category}`)
       .then((response) => {
         setData(response.data);
       })
