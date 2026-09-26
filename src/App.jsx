@@ -1,155 +1,187 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
-import { IoSearch } from 'react-icons/io5';
-import { BiReset } from "react-icons/bi";
-import { FaBookmark, FaExternalLinkAlt } from 'react-icons/fa';
-import Home from './components/Home';
+import { useTheme } from './hooks/useTheme';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import CategoryFilter from './components/CategoryFilter';
+import ToolGrid from './components/ToolGrid';
+import ToolDetails from './components/ToolDetails';
+import SortSelect from './components/SortSelect';
+import LoadingState from './components/LoadingState';
+import ErrorState from './components/ErrorState';
+import EmptyState from './components/EmptyState';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nullaidb.onrender.com';
 
 function App() {
-  const [data, setData] = useState([]);
-  const [value, setValue] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageLimit, setPageLimit] = useState(5);
-  const [totalItems, setTotalItems] = useState(0);
+  const { theme, toggleTheme } = useTheme();
 
-  useEffect(() => {
-    loadData((currentPage - 1) * pageLimit, currentPage * pageLimit);
-  }, [currentPage]);  
+  // Data state
+  const [tools, setTools] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    loadTotalItems();
-  }, []);  
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [sortOption, setSortOption] = useState('default');
 
-  const loadData = async (start, end) => {
+  // Detail modal
+  const [selectedTool, setSelectedTool] = useState(null);
+
+  // Fetch data from API
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(false);
     try {
-      const response = await axios.get(`https://nullaidb.onrender.com/data?_start=${start}&_end=${end}`);
-      const searchData = value.trim().toLowerCase(); // Convert search value to lowercase and trim whitespace
-      const filteredData = response.data.filter(item => item.title.toLowerCase().includes(searchData));
-      setData(filteredData);
-    } catch (error) {
-      console.error(error);
+      const [toolsRes, categoriesRes] = await Promise.all([
+        axios.get(`${API_BASE_URL}/tools`),
+        axios.get(`${API_BASE_URL}/categories`),
+      ]);
+      setTools(toolsRes.data);
+      setCategories(categoriesRes.data.map((c) => c.name));
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const loadTotalItems = async () => {
-    try{
-      const response = await axios.get('https://nullaidb.onrender.com/data');
-      setTotalItems(response.data.length);
-    }catch(error){
-      console.error(error);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Close modal on Escape
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setSelectedTool(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Filter and sort tools
+  const filteredTools = useMemo(() => {
+    let result = [...tools];
+
+    // Category filter
+    if (activeCategory !== 'All') {
+      result = result.filter((tool) => tool.category === activeCategory);
     }
-  };
 
-  const handleNext = () => {
-    const totalPages = Math.ceil(totalItems / pageLimit);
-    if(currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-      // loadData(currentPage * pageLimit, (currentPage + 1) * pageLimit);
-    }
-  };
-  const handlePrevious = () => {
-    if(currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      // loadData((currentPage - 2) * pageLimit, (currentPage - 1) * pageLimit);
-    }
-  };
-
-
-  const handleFilter = async (category) => {
-    return await axios
-      .get(`https://nullaidb.onrender.com/data?category=${category}`)
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
+    // Search filter — case-insensitive across multiple fields
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      result = result.filter((tool) => {
+        const searchableFields = [
+          tool.name,
+          tool.description,
+          tool.category,
+          tool.access?.loginMethod,
+          tool.access?.credits,
+          tool.generation?.resolution,
+          tool.generation?.aspectRatio,
+          tool.notes,
+          ...(tool.features || []),
+          ...(tool.generation?.type || []),
+          ...(tool.generation?.durations || []),
+        ];
+        return searchableFields.some(
+          (field) => field && String(field).toLowerCase().includes(query)
+        );
       });
-  };
+    }
 
+    // Sort
+    if (sortOption === 'a-z') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === 'z-a') {
+      result.sort((a, b) => b.name.localeCompare(a.name));
+    }
 
-  const handleReset = () => {
-    // loadData();
-    setCurrentPage(1);
-    setValue('');
-  };
+    return result;
+  }, [tools, activeCategory, searchQuery, sortOption]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    loadData();
-  };
-
+  // Dynamic categories from data (union of API categories + categories found in tools)
+  const dynamicCategories = useMemo(() => {
+    const fromTools = [...new Set(tools.map((t) => t.category))];
+    const merged = [...new Set([...categories, ...fromTools])];
+    return merged;
+  }, [tools, categories]);
 
   return (
-    <>
-      < Home />
+    <div className="min-h-screen flex flex-col">
+      <Header
+        theme={theme}
+        toggleTheme={toggleTheme}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
-      {/* TABS */}
-      <div className="flex justify-center m-10">
-        <div className="flex flex-col items-center shadow overflow-hidden border-b border-gray-900 sm:rounded-lg">
-          <div className="flex flex-wrap justify-center w-full space-x-4 p-2">
-            <button onClick={() => handleFilter('Top')} className="px-4 py-2 mb-2 rounded bg-blue-500 text-white">Top</button>
-            <button onClick={() => handleFilter('Video')} className="px-4 py-2 mb-2 rounded bg-blue-500 text-white">Video</button>
-            <button onClick={() => handleFilter('Social')} className="px-4 py-2 mb-2 rounded bg-blue-500 text-white">Social</button>
-          </div>
-        </div>
-      </div>
+      <main className="flex-1">
+        <Hero
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          toolCount={tools.length}
+        />
 
-
-      {/* Search */}
-      <form className="flex items-center max-w-sm mx-auto mt-10" onSubmit={handleSearch}>
-        <div className="relative w-full">
-          <input
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            type="text"
-            className="bg-gray-500 border border-gray-900 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search ..."
-          />
-        </div>
-        <button type="submit" className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          <span className='w-4 h-4'> <IoSearch /> </span>
-        </button>
-        <button type="reset" onClick={handleReset} className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          <span className='w-4 h-4'> <BiReset /> </span>
-        </button>
-      </form>
-
-      <section className="flex flex-wrap m-6 justify-center">
-        {data.length === 0 ? (
-          <h1 className="text-3xl font-bold text-center">No Data Found</h1>
-        ) : (
-          data.map((item, index) => (
-            <div key={index} className="max-w-xs rounded overflow-hidden shadow-md mx-2 my-4 shadow-slate-700">
-              <div className="px-6 py-4 flex flex-col h-full justify-between">
-                <div>
-                  <div className="font-bold text-xl mb-2">{item.title}</div>
-                  <p className="text-green-500 text-base">{item.category}</p>
-                  <p className="text-sm mt-2">{item.description}</p>
-                </div>
-                <div className="flex justify-between py-4">
-                  <div>
-                    <FaBookmark className="text-blue-500 mr-2 inline-block align-middle" />
-                    <span className="text-gray-400 text-sm">Bookmark</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-400 text-sm">Open Link</span>
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">
-                      <FaExternalLinkAlt className="text-blue-500 ml-2 inline-block align-middle" />
-                    </a>
-                  </div>
-                </div>
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {loading ? (
+            <LoadingState />
+          ) : error ? (
+            <ErrorState onRetry={fetchData} />
+          ) : (
+            <>
+              {/* Category filters */}
+              <div className="mb-6">
+                <CategoryFilter
+                  categories={dynamicCategories}
+                  activeCategory={activeCategory}
+                  onCategoryChange={setActiveCategory}
+                />
               </div>
-            </div>
-          ))
-        )}
-      </section>
 
-      <div className="flex justify-center mt-6">
-        <button onClick={handlePrevious} disabled={currentPage === 1} className="mr-4 px-4 py-2.5 bg-gray-200 text-gray-600 rounded-lg">Previous</button>
-        <span className="">{currentPage}</span>
-        <button onClick={handleNext} disabled={currentPage === Math.ceil(totalItems / pageLimit)} className="ml-4 px-4 py-2.5 bg-gray-200 text-gray-600 rounded-lg">Next</button>
-      </div>
-    </>
+              {/* Toolbar: count + sort */}
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {filteredTools.length === tools.length
+                    ? `${filteredTools.length} AI ${filteredTools.length === 1 ? 'tool' : 'tools'}`
+                    : `${filteredTools.length} ${filteredTools.length === 1 ? 'tool' : 'tools'} found`}
+                </p>
+                <SortSelect sortOption={sortOption} onSortChange={setSortOption} />
+              </div>
+
+              {/* Grid or empty */}
+              {filteredTools.length > 0 ? (
+                <ToolGrid tools={filteredTools} onSelectTool={setSelectedTool} />
+              ) : (
+                <EmptyState
+                  searchQuery={searchQuery}
+                  activeCategory={activeCategory}
+                  onClearSearch={() => setSearchQuery('')}
+                  onClearCategory={() => setActiveCategory('All')}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 dark:border-gray-800 py-6 text-center transition-colors duration-200">
+        <p className="text-xs text-gray-400 dark:text-gray-600">
+          &copy; {new Date().getFullYear()} NullAI. All rights reserved.
+        </p>
+      </footer>
+
+      {/* Detail Modal */}
+      {selectedTool && (
+        <ToolDetails tool={selectedTool} onClose={() => setSelectedTool(null)} />
+      )}
+    </div>
   );
 }
 

@@ -3,7 +3,39 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color: #242424;
-  background-color: rgba(255, 255, 255, 0.87);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Light theme defaults */
+body {
+  @apply bg-gray-50 text-gray-900 transition-colors duration-200;
+}
+
+/* Dark theme overrides */
+.dark body {
+  @apply bg-gray-950 text-gray-100;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+.dark ::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+/* Focus outline utility */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-indigo-500;
 }
