@@ -1,55 +1,88 @@
-
 # NullAI
 
-Welcome to the NullAI. This project aims to provide users with a curated list of the latest AI websites along with short descriptions. Users can browse, read descriptions of various AI websites, and bookmark their favorites. The project also includes signup and login features to personalize the bookmarking experience.
+A modern AI tools directory. Browse, search, and explore useful AI tools for videos, images, coding, productivity and more.
+
+**Live:** [nullaii.netlify.app](https://nullaii.netlify.app/)
 
 ## Features
 
--   **Curated List**: Explore a curated list of the latest AI websites covering various topics and domains.
--   **Short Descriptions**: Read short descriptions of each AI website to understand its purpose and content.
--   **Bookmarking**: Bookmark your favorite AI websites to easily access them later.
--   **Signup/Login**: Create an account or login to personalize your bookmarking experience and access your bookmarks from any device.
+- **AI Tools Directory** — Browse a curated collection of AI tools organized by category
+- **Real-Time Search** — Search across tool names, descriptions, categories, features, login methods, and more
+- **Dynamic Categories** — Filter tools by category (AI Videos, AI Images, Coding, AI Audio, AI Writing, AI Productivity, AI Design, Other)
+- **Dark / Light Mode** — Theme toggle with system preference detection and persistence
+- **Sorting** — Sort tools alphabetically (A–Z, Z–A) or by default order
+- **Tool Details** — Click any tool card to view full details in a modal
+- **Responsive Design** — Works on desktop, tablet, and mobile
 
-## Technologies Used
+## Roadmap
 
--   **React**: Frontend development framework for building user interfaces.
--   **Firebase**: Backend-as-a-Service (BaaS) platform for authentication and database management.
--   **React Router**: Library for handling navigation and routing in a React application.
+- **Bookmarks** — Save favourite AI tools to your local browser (coming soon)
+
+## Tech Stack
+
+- **React 18** — UI framework
+- **Vite** — Build tool and dev server
+- **Tailwind CSS 3** — Utility-first styling with dark mode support
+- **Axios** — HTTP client for API requests
+- **React Icons** — Icon library
+- **JSON Server** — Local development API
 
 ## Getting Started
 
-To get started with the AI Website Directory project, follow these steps:
+### Prerequisites
 
-1.  Clone the repository to your local machine:
-    
-    `git clone https://github.com/nullhackerss/nullai.git` 
-    
-2.  Navigate to the project directory:
-       
-    `cd nullai` 
-    
-3.  Install dependencies using npm or yarn:
-    
-    `npm install`
+- [Node.js](https://nodejs.org/) (v18+)
+- npm
 
-4. To Run 
-    - JSON server - Open in the terminal
-        - `npx json-server data/db.json --port 5000`
+### Installation
 
-    - Open a new terminal
-        - `npm run dev`
+1. Clone the repository:
 
-6.  Open the link 
+   ```bash
+   git clone https://github.com/nullhackers/nullai.git
+   cd nullai
+   ```
 
-## Contributing
+2. Install dependencies:
 
-Contributions to the AI Website Directory project are welcome! If you encounter any bugs, have suggestions for improvements, or want to contribute code, feel free to open an issue or submit a pull request.
+   ```bash
+   npm install
+   ```
 
-Please review the [CONTRIBUTING.md](https://github.com/nullhackers/nullai/blob/main/CONTRIBUTING.md) file for guidelines on contributing to this project.
+3. Create a `.env` file in the project root:
 
+   ```env
+   VITE_API_URL=http://localhost:5000
+   ```
+
+### Development
+
+Start the local JSON server and the Vite dev server in two terminals:
+
+```bash
+# Terminal 1 — API
+npm run server
+
+# Terminal 2 — Frontend
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Production Build
+
+```bash
+npm run build
+```
+
+The build output is in the `dist/` directory. The production build uses `VITE_API_URL` from `.env.production`.
+
+## Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Base URL of the NullAI API | `http://localhost:5000` (dev) or `https://nullaidb.onrender.com` (prod) |
 
 ## Contact
 
-If you have any questions or need further assistance, feel free to reach out:
-
--   Twitter: [@nullhackers](https://twitter.com/nullhackers)
+- Twitter: [@nullhackers](https://twitter.com/nullhackers)
