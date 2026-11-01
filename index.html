@@ -3,23 +3,23 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b10" />
   <meta name="description"
-    content="NullAI — Discover the best AI tools for videos, images, coding, productivity and more. Browse, search, and explore useful AI tools." />
-  <title>NullAI — AI Tools Directory</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
+    content="Discover your next unfair advantage. Explore a curated directory of AI tools for creativity, coding, research, and everyday work." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>NullAI — Discover the best AI tools</title>
   <script>
-    // Prevent theme flash on initial load
-    (function () {
-      const stored = localStorage.getItem('nullai-theme');
-      if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      }
-    })();
+    try {
+      let t = localStorage.getItem("nullai-theme");
+      document.documentElement.dataset.theme =
+        t ||
+        (matchMedia("(prefers-color-scheme: light)").matches
+          ? "light"
+          : "dark");
+    } catch {
+      document.documentElement.dataset.theme = "dark";
+    }
   </script>
 </head>
 

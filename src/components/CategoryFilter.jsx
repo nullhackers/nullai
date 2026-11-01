@@ -1,35 +1,53 @@
-const CategoryFilter = ({ categories, activeCategory, onCategoryChange }) => {
+import {
+  Layers,
+  PenLine,
+  Image,
+  Code2,
+  Video,
+  AudioLines,
+  Microscope,
+  Palette,
+  Zap,
+} from "lucide-react";
+const icons = {
+  "All tools": Layers,
+  Writing: PenLine,
+  Image: Image,
+  Coding: Code2,
+  Video: Video,
+  Audio: AudioLines,
+  Research: Microscope,
+  Design: Palette,
+  Productivity: Zap,
+};
+export default function CategoryFilter({ categories = [], value, onChange, tools = [] }) {
+  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeTools = Array.isArray(tools) ? tools : [];
   return (
-    <div className="flex flex-wrap gap-2 justify-center" role="tablist" aria-label="Filter by category">
-      <button
-        role="tab"
-        aria-selected={activeCategory === 'All'}
-        onClick={() => onCategoryChange('All')}
-        className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-          activeCategory === 'All'
-            ? 'bg-indigo-600 text-white shadow-sm'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-        }`}
-      >
-        All
-      </button>
-      {categories.map((category) => (
-        <button
-          key={category}
-          role="tab"
-          aria-selected={activeCategory === category}
-          onClick={() => onCategoryChange(category)}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-            activeCategory === category
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-          }`}
-        >
-          {category}
-        </button>
-      ))}
+    <div
+      id="categories"
+      className="category-filter"
+      aria-label="Filter by category"
+    >
+      {["All tools", ...safeCategories].map((c) => {
+        const Icon = icons[c] || Layers;
+        return (
+          <button
+            key={c}
+            className={value === c ? "active" : ""}
+            onClick={() => onChange(c)}
+            aria-pressed={value === c}
+          >
+            <Icon size={16} />
+            {c}
+            <span>
+              {c === "All tools"
+                ? safeTools.length
+                : safeTools.filter((t) => t.category === c).length}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
-};
-
-export default CategoryFilter;
+}

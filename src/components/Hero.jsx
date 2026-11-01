@@ -1,46 +1,106 @@
-import { IoSearch } from 'react-icons/io5';
-
-const Hero = ({ searchQuery, onSearchChange, toolCount }) => {
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowUpRight,
+  Code2,
+  AudioLines,
+  Sparkles,
+  Image,
+  Orbit,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import SearchBar from "./SearchBar";
+export default function Hero({ tools = [] }) {
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+  const safeTools = Array.isArray(tools) ? tools : [];
+  const categories = new Set(safeTools.map((t) => t.category)).size;
   return (
-    <section className="relative py-12 sm:py-16 lg:py-20 overflow-hidden">
-      {/* Subtle background accent */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-          Discover the Best{' '}
-          <span className="text-indigo-600 dark:text-indigo-400">AI Tools</span>
+    <section className="hero container">
+      <div className="hero-grid" />
+      <motion.div
+        className="hero-copy"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55 }}
+      >
+        <div className="eyebrow">
+          <span className="live-dot" /> A LITTLE CURIOSITY. LIMITLESS
+          POSSIBILITIES.
+        </div>
+        <h1>
+          Discover the best
+          <br />
+          <span className="gradient-text">AI tools.</span>
+          <br />
+          Find your edge.
         </h1>
-        <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-          Explore useful AI tools for videos, images, coding, productivity and more.
+        <p className="hero-description">
+          Extraordinary tools for your everyday ideas.
+          <br className="desktop-break" /> Explore AI for creativity, coding,
+          and everything in between.
         </p>
-
-        {/* Hero search */}
-        <div className="mt-8 max-w-lg mx-auto">
-          <div className="relative">
-            <IoSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" />
-            <input
-              id="hero-search"
-              type="search"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search AI tools..."
-              className="w-full pl-12 pr-4 py-3.5 text-base bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-              aria-label="Search AI tools"
-            />
+        <SearchBar
+          value={q}
+          onChange={setQ}
+          hero
+          onSubmit={() => navigate("/tools?q=" + encodeURIComponent(q))}
+        />
+        <div className="popular-searches">
+          <span>Try searching</span>
+          {["Design", "Coding", "Video"].map((x) => (
+            <button key={x} onClick={() => navigate("/tools?q=" + x)}>
+              {x}
+              <ArrowUpRight size={12} />
+            </button>
+          ))}
+        </div>
+        <div className="hero-stats">
+          <div>
+            <strong>{tools.length}</strong>
+            <span>Curated tools</span>
+          </div>
+          <div>
+            <strong>{categories}</strong>
+            <span>Creative categories</span>
+          </div>
+          <div>
+            <strong>{tools.filter((t) => t.pricing !== "Paid").length}</strong>
+            <span>Free to explore</span>
           </div>
         </div>
-
-        {toolCount > 0 && (
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-500">
-            {toolCount} AI {toolCount === 1 ? 'tool' : 'tools'} available
-          </p>
-        )}
+      </motion.div>
+      <div className="hero-art" aria-hidden="true">
+        <div className="orbit-glow" />
+        <div className="orbital orbital-1" />
+        <div className="orbital orbital-2" />
+        <div className="orbital orbital-3" />
+        <div className="orbit-core">
+          <Orbit size={66} strokeWidth={1} />
+        </div>
+        <div className="floating-tool floating-a">
+          <Sparkles size={27} />
+          <span>Create</span>
+        </div>
+        <div className="floating-tool floating-b">
+          <Code2 size={26} />
+          <span>Build</span>
+        </div>
+        <div className="floating-tool floating-c">
+          <Image size={25} />
+          <span>Imagine</span>
+        </div>
+        <div className="floating-tool floating-d">
+          <AudioLines size={25} />
+          <span>Explore</span>
+        </div>
+        <div className="art-caption">
+          <span className="live-dot" /> YOUR NEXT BIG IDEA STARTS HERE
+        </div>
+        <i className="star star-1" />
+        <i className="star star-2" />
+        <i className="star star-3" />
       </div>
     </section>
   );
-};
-
-export default Hero;
+}
